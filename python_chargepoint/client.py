@@ -362,10 +362,12 @@ class ChargePoint:
     def set_amperage_limit(self, charger_id: int, amperage_limit: int, max_retry: int = 5) -> None:
         _LOGGER.debug(f"Setting amperage limit for {charger_id} to {amperage_limit}")
         request = {"deviceData": self._device_data, "chargeAmperageLimit": amperage_limit}
+        url = f"{self._global_config.endpoints.internal_api}/driver/charger/{charger_id}/config/v1/charge-amperage-limit"
         response = self._session.post(
-            f"{self._global_config.endpoints.internal_api}/driver/charger/{charger_id}/config/v1/charge-amperage-limit",
+            url,
             json=request
         )
+        _LOGGER.warn(f"request to {url} with {request}")
 
         if response.status_code != codes.ok:
             _LOGGER.error(
@@ -377,6 +379,7 @@ class ChargePoint:
                 response=response, message="Failed to set amperage limit."
             )
         status = response.json()
+        _LOGGER.warn(f"response is {status}")
         # The API can return 200 but still have a failure status.
         if status["status"] != "success":
             message = status.get("message", "empty message")
