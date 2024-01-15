@@ -394,7 +394,7 @@ class ChargePoint:
             charger_status = self.get_home_charger_status(charger_id)
             if charger_status.amperage_limit == amperage_limit:
                 return
-            sleep(1)
+            sleep(0.5)
 
         raise ChargePointCommunicationException(
             response=response, message="New amperage limit did not persist to charger after retries"
